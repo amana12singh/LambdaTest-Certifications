@@ -1,0 +1,46 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+import time
+
+# LambdaTest credentials
+username = 'YOUR_LAMBDATEST_USERNAME'
+access_key = 'YOUR_LAMBDATEST_ACCESS_KEY'
+
+# LambdaTest Desired Capabilities
+capabilities = {
+    'browserName': 'Chrome',
+    'version': 'latest',
+    'platform': 'Windows 10',
+    'resolution': '1920x1080',
+    'video': True,
+    'network': True,
+    'console': True,
+    'visual': True,
+}
+
+# LambdaTest Hub URL
+url = f'https://{username}:{access_key}@hub.lambdatest.com/wd/hub'
+
+# Set up WebDriver
+driver = webdriver.Remote(command_executor=url, desired_capabilities=capabilities)
+
+try:
+    # Open URL
+    driver.get('https://www.lambdatest.com/selenium-playground')
+
+    # Click on Drag & Drop Sliders
+    driver.find_element(By.LINK_TEXT, 'Drag & Drop Sliders').click()
+
+    # Drag slider to value 95
+    slider = driver.find_element(By.ID, 'slider')
+    ActionChains(driver).drag_and_drop_by_offset(slider, 80, 0).perform()
+    
+    # Validate slider value
+    slider_value = driver.find_element(By.ID, 'range').text
+    assert slider_value == '95'
+
+finally:
+    driver.quit()
