@@ -1,0 +1,55 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.action_chains import ActionChains
+import time
+
+# LambdaTest credentials
+username = 'YOUR_LAMBDATEST_USERNAME'
+access_key = 'YOUR_LAMBDATEST_ACCESS_KEY'
+
+# LambdaTest Desired Capabilities
+capabilities = {
+    'browserName': 'Chrome',
+    'version': 'latest',
+    'platform': 'Windows 10',
+    'resolution': '1920x1080',
+    'video': True,
+    'network': True,
+    'console': True,
+    'visual': True,
+}
+
+# LambdaTest Hub URL
+url = f'https://{username}:{access_key}@hub.lambdatest.com/wd/hub'
+
+# Set up WebDriver
+driver = webdriver.Remote(command_executor=url, desired_capabilities=capabilities)
+
+try:
+    # Open URL
+    driver.get('https://www.lambdatest.com/selenium-playground')
+
+    # Click on Simple Form Demo
+    driver.find_element(By.LINK_TEXT, 'Simple Form Demo').click()
+
+    # Validate URL
+    assert 'simple-form-demo' in driver.current_url
+
+    # Enter Message
+    message = "Welcome to LambdaTest"
+    message_box = driver.find_element(By.ID, 'user-message')
+    message_box.send_keys(message)
+
+    # Click Get Checked Value
+    driver.find_element(By.CLASS_NAME, 'btn-default').click()
+
+    # Validate message display
+    displayed_message = driver.find_element(By.ID, 'message').text
+    assert displayed_message == message
+
+finally:
+    driver.quit()
